@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biking Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+
+        canvas {
+            border: 1px solid black;
+            background-color: #cce7ff;
+        }
+
+        /* Game instructions style */
+        .instructions {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 18px;
+            color: #333;
+            width: 200px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .game-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: #ff0000;
+        }
+
+        /* Reload button style */
+        .reload-button {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .reload-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="instructions">
+    <h3>Instructions:</h3>
+    <ul>
+        <li>Press the UP arrow to make the bike go up.</li>
+        <li>Avoid obstacles!</li>
+        <li>Score increases as you survive longer.</li>
+        <li>Game ends if the bike collides with an obstacle.</li>
+        <li>If you want to go to the scratch page again, click <a href="SCRATCH2.html">here</a></li>
+        <li>If you want to go to the Resume page again, click <a href="../index.html">here</a></li>
+    </ul>
+    <!-- Reload Button -->
+    <a href="#" class="reload-button" onclick="reloadGame()">Reload Game</a>
+</div>
+
+<canvas id="gameCanvas" width="800" height="400"></canvas>
+
+<div class="game-info">
+    <p id="score">Score: 0</p>
+</div>
+
+<div class="game-over" id="gameOverMessage" style="display: none;">Game Over</div>
+
+<script>
+// Setup canvas and game variables
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const scoreElement = document.getElementById('score');
+const gameOverMessage = document.getElementById('gameOverMessage');
+
+let bikeY = 150;
+let bikeSpeed = 0;
+let gravity = 0.5;
+let lift = -10;
+let score = 0;
+let isGameOver = false;
+let obstacles = [];
+
+// Event listener for bike movement (up/down)
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') {
+        bikeSpeed = lift;
+    }
+});
+
+// Bike object
+const bike = {
+    width: 50,
+    height: 30,
+    x: 50,
+    y: bikeY,
+    draw: function () {
+        ctx.fillStyle = '#333';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+};
+
+// Obstacle object
+function Obstacle() {
+    this.width = 30 + Math.random() * 20;
+    this.height = 30 + Math.random() * 50;
+    this.x = canvas.width;
+    this.y = canvas.height - this.height - Math.random() * 100;
+    this.speed = 3 + Math.random() * 2;
+
+    this.update = function () {
+        this.x -= this.speed;
+        if (this.x + this.width < 0) {
+            this.x = canvas.width;
+            this.y = canvas.height - this.height - Math.random() * 100;
+            score++;
+        }
+    };
+
+    this.draw = function () {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    };
+}
+
+// Update the game state
+function update() {
+    if (isGameOver) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Update bike speed and position
+    bikeSpeed += gravity;
+    bikeY += bikeSpeed;
+
+    // Check for collisions with ground or ceiling
+    if (bikeY + bike.height > canvas.height || bikeY < 0) {
+        gameOver();
+    }
+
+    // Draw the bike
+    bike.y = bikeY;
+    bike.draw();
+
+    // Update and draw obstacles
+    obstacles.forEach(obstacle => {
+        obstacle.update();
+        obstacle.draw();
+
+        // Check for collisions with bike
+        if (bike.x + bike.width > obstacle.x &&
+            bike.x < obstacle.x + obstacle.width &&
+            bikeY + bike.height > obstacle.y) {
+            gameOver();
+        }
+    });
+
+    // Draw score
+    scoreElement.textContent = `Score: ${score}`;
+
+    // Request the next frame
+    requestAnimationFrame(update);
+}
+
+// Game over function
+function gameOver() {
+    isGameOver = true;
+    gameOverMessage.style.display = 'block';
+}
+
+// Spawn obstacles at intervals
+setInterval(() => {
+    if (!isGameOver) {
+        obstacles.push(new Obstacle());
+    }
+}, 2000);
+
+// Reload the game
+function reloadGame() {
+    // Reload the current page to restart the game
+    window.location.reload();
+}
+
+// Start the game loop
+update();
+</script>
+
+</body>
+</html>

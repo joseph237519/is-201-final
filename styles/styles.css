@@ -1,0 +1,78 @@
+body{
+    background-color: rgb(26, 21, 21);
+    color:white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    left: 200px;
+
+}
+h1, h2, h3, h4, h5, h6 { 
+    color: blue;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+
+}
+.main-content{
+
+    margin-left: 220px;
+    padding: 20px;
+}
+.sidebar{
+    color: blueviolet;
+    background-color: whitesmoke;
+    width: 200px;
+    height: 100%;
+    left: 0;
+    padding: 15px;
+    position: fixed;
+}
+
+.sidebar ul{
+    list-style: none;
+    padding:0;
+
+}
+
+.sidebar ul li{
+    color: black;
+}
+
+.sidebar ul li a{
+    color: rgb(10, 10, 10);
+    text-decoration: none;
+}
+
+.sidebar ul li a:hover{
+    text-decoration: underline;
+    color: blue;
+}
+
+.navbar{
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: aqua;
+
+}
+.navbar a:hover{
+    background-color: aqua;
+    color: brown;
+    border-radius: 5px;
+}
+.boxmodel{
+    background-color: rgb(13, 16, 9);
+    padding: 5px;
+    border: 10px solid rgb(0, 21, 255);
+    margin: 20px;
+}
+.boxmodel a:hover{
+    background-color: rgb(242, 241, 241);
+    color: brown;
+    border-radius: 5px;
+}
+.link {
+    text-decoration: wavy;
+    color: Blue;
+    font-style: italic;
+    
+}
